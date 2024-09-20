@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "theborges-server-api",
+      "script": "pnpm",
+      "args": "start:api"
+    },
+    {
+      "name": "theborges-server-job",
+      "script": "pnpm",
+      "args": "start:job"
+    }
+  ]
+}
