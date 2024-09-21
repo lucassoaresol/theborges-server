@@ -1,18 +1,23 @@
 import { CronJob } from 'cron';
 
-import Database from '../db/pg.js';
-import { IBooking } from '../interfaces/booking.js';
-import { searchAll, verifyBooking } from '../utils/helperFunctions.js';
+import { prismaClient } from '../libs/prismaClient.js';
+import { VerifyBookingUseCase } from '../utils/VerifyBookingUseCase.js';
 
 CronJob.from({
   cronTime: '* */10 * * * *',
   onTick: async () => {
-    const pool = Database.getPool();
-    const bookings = await searchAll<IBooking>(pool, 'bookings');
+    const bookings = await prismaClient.booking.findMany({
+      where: { wasReminded: true },
+      include: {
+        client: true,
+        services: { select: { service: true, price: true, order: true } },
+      },
+    });
 
     await Promise.all(
       bookings.map(async (data) => {
-        await verifyBooking(data);
+        const verify = new VerifyBookingUseCase();
+        await verify.execute(data);
       }),
     );
   },

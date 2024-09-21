@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Client } from 'pg';
 import Pool from 'pg-pool';
-
-import Database from '../db/pg';
-import { IBooking } from '../interfaces/booking';
-import { createMessage } from '../libs/axiosWPP';
-import dayLib from '../libs/dayjs';
 
 interface IDataDict {
   [key: string]: any;
@@ -205,40 +201,4 @@ export async function generateDbMsg(
   }
 
   return template.replace(/\\n/g, '\n');
-}
-
-export async function verifyBooking({
-  id,
-  chat_id,
-  client,
-  time,
-  value,
-}: IBooking) {
-  const pool = Database.getPool();
-
-  const dayTime = dayLib(time);
-
-  if (dayTime.diff(dayLib(), 'minutes') <= 30) {
-    const minutes = dayTime.fromNow().match(/\d+/);
-    const hour = dayTime.format('HH:mm');
-
-    const message = await generateDbMsg(pool, 'REMEMBER_BOOKING', {
-      nome_cliente: client,
-      minutes,
-      hour,
-      value: Number(value).toFixed(2).replace('.', ','),
-    });
-
-    const postData = {
-      number: chat_id,
-      message,
-    };
-
-    await Promise.all([
-      createMessage(postData),
-      pool.query('DELETE FROM bookings WHERE id = $1;', [id]),
-    ]);
-    await createMessage({ number: chat_id, message: '⬇️ PIX ⬇️' });
-    await createMessage({ number: chat_id, message: '32.665.968/0001-23' });
-  }
 }

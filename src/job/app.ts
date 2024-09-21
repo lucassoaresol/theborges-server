@@ -1,3 +1,3 @@
-import './readMessages.js';
-// import './verifyBookings.js'
 import './createWorkDay.js';
+import './readMessages.js';
+import './verifyBookings.js';
