@@ -75,7 +75,7 @@ export class CreateBookingUseCase {
       new: string;
       new_person: string;
     },
-  ) { }
+  ) {}
 
   async execute({
     clientId,
@@ -206,11 +206,20 @@ export class CreateBookingUseCase {
     let totalPrice = 0;
 
     services.forEach((service) => {
-      serviceList += `- _${service.service.name}_: R$ ${service.price.toFixed(2)}\n`;
+      serviceList += `- _${service.service.name}_: ${service.price.toLocaleString(
+        'pt-BR',
+        {
+          style: 'currency',
+          currency: 'BRL',
+        },
+      )}\n`;
       totalPrice += service.price;
     });
 
-    serviceList += `Total: *R$ ${totalPrice.toFixed(2)}*`;
+    serviceList += `Total: *${totalPrice.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })}*`;
 
     const objFormat: {
       nome_cliente: string;
