@@ -1,7 +1,8 @@
 import { createMessage } from '../libs/axiosWPP.js';
 import dayLib from '../libs/dayjs.js';
+import { capitalizeFirstName } from '../utils/capitalizeFirstName.js';
+import { generateDbMsg } from '../utils/generateDbMsg.js';
 import {
-  generateDbMsg,
   saudacao,
   updateIntoTable,
   validatePhoneNumber,
@@ -31,12 +32,19 @@ class Message extends ModelWPP {
   private async sendAndGenerateMSG() {
     let message = '';
     const chat = this.chat.getData();
+    const client = this.chat.getClient();
     const salute = saudacao(dayLib().toDate());
     const link = 'https://agendar.barbearia.theborges.nom.br';
     const baseDict = { salute, link_site: link };
 
     if (!chat.is_group && !chat.is_send) {
-      if (chat.name.length > 2 && !validatePhoneNumber(chat.name)) {
+      if (client) {
+        message = await generateDbMsg(this.pool, 'WPP_INBOX_NAME', {
+          ...baseDict,
+          nome_cliente: capitalizeFirstName(client.name),
+          link_site: `${link}/c/${client.publicId}`,
+        });
+      } else if (chat.name.length > 2 && !validatePhoneNumber(chat.name)) {
         message = await generateDbMsg(this.pool, 'WPP_INBOX_NAME', {
           ...baseDict,
           nome_cliente: chat.name,

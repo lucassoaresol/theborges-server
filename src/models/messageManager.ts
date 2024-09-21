@@ -12,7 +12,7 @@ class MessageManager extends ModelWPP {
   }
 
   private async addMessage(data: IMessageWithChat) {
-    const chat = this.chats.add({
+    const chat = await this.chats.add({
       id: data.chat_id,
       name: data.chat_name,
       is_group: data.chat_is_group,

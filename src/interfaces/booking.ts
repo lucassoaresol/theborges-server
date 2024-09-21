@@ -1,3 +1,5 @@
+import { IClient } from './client';
+
 export interface IBooking {
   id: number;
   date: Date;
@@ -11,18 +13,7 @@ export interface IBooking {
   status: string;
   updatedAt: Date;
   wasReminded: boolean;
-  client: {
-    id: number;
-    name: string;
-    phone: string;
-    email: string;
-    birthDay: number | null;
-    birthMonth: number | null;
-    wantsPromotions: boolean;
-    publicId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  client: IClient;
   services: {
     price: number;
     order: number;

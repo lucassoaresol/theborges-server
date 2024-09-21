@@ -3,9 +3,7 @@
 import { Client } from 'pg';
 import Pool from 'pg-pool';
 
-interface IDataDict {
-  [key: string]: any;
-}
+import { IDataDict } from '../interfaces/dataDict';
 
 export async function insertIntoTable(
   client: Pool<Client>,
@@ -116,50 +114,6 @@ export async function searchByField<T>(
   return result.rows as T[];
 }
 
-export async function searchUniqueByField<T>(
-  client: Pool<Client>,
-  table: string,
-  field: string,
-  value: any,
-  fields: string[] | null = null,
-): Promise<T | null> {
-  let query: string;
-
-  if (fields && fields.length > 0) {
-    if (fields.length === 1) {
-      query = `
-        SELECT ${fields[0]}
-        FROM ${table}
-        WHERE ${field} = $1
-        LIMIT 1;
-      `;
-    } else {
-      const selectedFields = fields.join(', ');
-      query = `
-        SELECT ${selectedFields}
-        FROM ${table}
-        WHERE ${field} = $1
-        LIMIT 1;
-      `;
-    }
-  } else {
-    query = `
-      SELECT *
-      FROM ${table}
-      WHERE ${field} = $1
-      LIMIT 1;
-    `;
-  }
-
-  const result = await client.query(query, [value]);
-
-  if (result.rows.length > 0) {
-    return result.rows[0] as T;
-  } else {
-    return null;
-  }
-}
-
 export function saudacao(dt: Date): string {
   const horaAtual = dt.getHours();
   if (horaAtual >= 5 && horaAtual < 12) {
@@ -175,30 +129,4 @@ export function validatePhoneNumber(phoneNumber: string): boolean {
   const phoneRegex =
     /\+?\d{1,3}?[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}|\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
   return phoneRegex.test(phoneNumber);
-}
-
-export async function generateDbMsg(
-  client: Pool<Client>,
-  key: string,
-  objFormat?: IDataDict,
-): Promise<string> {
-  let template = '';
-  const resultTemplate = await searchUniqueByField<{ value: string }>(
-    client,
-    'generic_storages_value',
-    'key',
-    key,
-    ['value'],
-  );
-  if (resultTemplate) {
-    if (objFormat) {
-      template = resultTemplate.value.replace(/{(\w+)}/g, (_, match) => {
-        return objFormat[match] || '';
-      });
-    } else {
-      template = resultTemplate.value;
-    }
-  }
-
-  return template.replace(/\\n/g, '\n');
 }

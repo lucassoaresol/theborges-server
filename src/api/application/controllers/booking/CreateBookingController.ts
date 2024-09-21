@@ -23,7 +23,7 @@ const schema = z.object({
 });
 
 export class CreateBookingController implements IController {
-  constructor(private readonly createBookingUseCase: CreateBookingUseCase) { }
+  constructor(private readonly createBookingUseCase: CreateBookingUseCase) {}
 
   async handle({ body }: IRequest): Promise<IResponse> {
     const {
