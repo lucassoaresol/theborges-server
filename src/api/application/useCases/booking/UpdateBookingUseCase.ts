@@ -83,7 +83,11 @@ export class UpdateBookingUseCase {
         );
         const formattedDate = this.getFormattedDate(startDateTime);
 
-        const message = await this.generateDbMsg(customerName, formattedDate);
+        const message = await this.generateDbMsg(
+          booking.client.publicId,
+          customerName,
+          formattedDate,
+        );
 
         await Promise.all([
           createMessage({ message, number: booking.client.email }),
@@ -144,10 +148,12 @@ Horário disponível: ${formattedDate}`,
   }
 
   private async generateDbMsg(
+    publicId: string,
     customerName: string,
     formattedDate: string,
   ): Promise<string> {
     const objFormat = {
+      public_id: publicId,
       nome_cliente: customerName,
       data: formattedDate,
     };

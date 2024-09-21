@@ -156,6 +156,7 @@ export class CreateBookingUseCase {
     const formattedDate = this.getFormattedDate(startDateTime);
 
     const message = await this.generateDbMsg(
+      publicId,
       customerName,
       formattedDate,
       forPersonName,
@@ -192,6 +193,7 @@ export class CreateBookingUseCase {
   }
 
   private async generateDbMsg(
+    publicId: string,
     customerName: string,
     formattedDate: string,
     forPersonName: string | undefined,
@@ -222,12 +224,14 @@ export class CreateBookingUseCase {
     })}*`;
 
     const objFormat: {
+      public_id: string;
       nome_cliente: string;
       data: string;
       total_servico: string;
       servicos: string;
       nome_pessoa?: string;
     } = {
+      public_id: publicId,
       nome_cliente: customerName,
       data: formattedDate,
       total_servico:
@@ -258,33 +262,5 @@ export class CreateBookingUseCase {
     }
 
     return template.replace(/\\n/g, '\n');
-  }
-
-  private async generateUniquePublicId(length: number = 5): Promise<string> {
-    const allowedCharacters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-    const maxAttempts = 100;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      let publicId = '';
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(
-          Math.random() * allowedCharacters.length,
-        );
-        publicId += allowedCharacters[randomIndex];
-      }
-
-      const existingId = await prismaClient.booking.findUnique({
-        where: { publicId },
-      });
-
-      if (!existingId) {
-        return publicId;
-      }
-    }
-
-    throw new AppError(
-      'Não foi possível gerar um ID único após várias tentativas',
-    );
   }
 }

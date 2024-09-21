@@ -8,7 +8,7 @@ class Chat {
     private is_group: boolean,
     private is_send = false,
     private client: IClient | null,
-  ) { }
+  ) {}
 
   public getData(): IChat {
     return {
