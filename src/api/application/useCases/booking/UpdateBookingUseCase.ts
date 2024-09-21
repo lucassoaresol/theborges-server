@@ -90,9 +90,9 @@ export class UpdateBookingUseCase {
           avisos({
             message: `*Aviso de Horário Vago*
 
-  Motivo: Cliente cancelou
-  Cliente: ${customerName}
-  Horário disponível: ${formattedDate}`,
+Motivo: Cliente cancelou
+Cliente: ${customerName}
+Horário disponível: ${formattedDate}`,
           }),
         ]);
       }
@@ -109,9 +109,9 @@ export class UpdateBookingUseCase {
         await avisos({
           message: `*Aviso de Horário Vago*
 
-  Motivo: Cliente reagendou
-  Cliente: ${customerName}
-  Horário disponível: ${formattedDate}`,
+Motivo: Cliente reagendou
+Cliente: ${customerName}
+Horário disponível: ${formattedDate}`,
         });
       }
 
