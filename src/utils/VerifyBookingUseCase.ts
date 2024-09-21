@@ -5,14 +5,14 @@ import { prismaClient } from '../libs/prismaClient';
 
 export class VerifyBookingUseCase {
   async execute(booking: IBooking) {
-    const now = dayLib();
     const startDateTime = dayLib(booking.date)
       .startOf('day')
       .add(booking.startTime, 'm');
 
-    if (startDateTime.diff(now, 'minutes') <= 30) {
+    const minutes = startDateTime.diff(dayLib(), 'minutes');
+
+    if (minutes <= 30) {
       const customerName = this.capitalizeFirstName(booking.client.name.trim());
-      const minutes = now.get('m');
       const hour = startDateTime.format('HH:mm');
 
       let totalPrice = 0;
