@@ -7,7 +7,7 @@ CronJob.from({
   cronTime: '* */10 * * * *',
   onTick: async () => {
     const bookings = await prismaClient.booking.findMany({
-      where: { wasReminded: true },
+      where: { wasReminded: true, status: 'CONFIRMED' },
       include: {
         client: true,
         services: { select: { service: true, price: true, order: true } },
