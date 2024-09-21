@@ -1,16 +1,34 @@
 import { IMessageWithChat } from '../interfaces/message.js';
 
+import ChatManager from './chatManager.js';
 import Message from './message.js';
 import ModelWPP from './modelWPP.js';
 
 class MessageManager extends ModelWPP {
   private messages: Map<string, Message> = new Map();
 
+  constructor(private chats: ChatManager) {
+    super();
+  }
+
   private async addMessage(data: IMessageWithChat) {
+    const chat = this.chats.add({
+      id: data.chat_id,
+      name: data.chat_name,
+      is_group: data.chat_is_group,
+      is_send: false,
+    });
+
     let message = this.messages.get(data.id);
 
     if (!message) {
-      message = new Message(data);
+      message = new Message(
+        data.id,
+        data.from_me,
+        data.chat_id,
+        data.client_id,
+        chat,
+      );
       this.messages.set(data.id, message);
     }
 

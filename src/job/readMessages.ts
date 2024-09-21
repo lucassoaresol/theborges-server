@@ -1,5 +1,6 @@
 import { CronJob } from 'cron';
 
+import ChatManager from '../models/chatManager.js';
 import MessageManager from '../models/messageManager.js';
 
 let isRunningReadMessages = false;
@@ -12,7 +13,8 @@ CronJob.from({
     }
     isRunningReadMessages = true;
     try {
-      const messageManager = new MessageManager();
+      const chatManager = new ChatManager();
+      const messageManager = new MessageManager(chatManager);
       await messageManager.read();
     } catch (error) {
       console.error('Erro durante a execução do job:', error);

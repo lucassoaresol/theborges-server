@@ -1,4 +1,3 @@
-import { IMessageWithChat } from '../interfaces/message.js';
 import { createMessage } from '../libs/axiosWPP.js';
 import dayLib from '../libs/dayjs.js';
 import {
@@ -12,30 +11,14 @@ import Chat from './chat.js';
 import ModelWPP from './modelWPP.js';
 
 class Message extends ModelWPP {
-  private id: string;
-  private from_me: boolean;
-  private chat_id: string;
-  private client_id: string;
-  private chat: Chat;
-
-  constructor({
-    id,
-    from_me,
-    chat_id,
-    client_id,
-    chat_is_group,
-    chat_name,
-  }: IMessageWithChat) {
+  constructor(
+    private id: string,
+    private from_me: boolean,
+    private chat_id: string,
+    private client_id: string,
+    private chat: Chat,
+  ) {
     super();
-    this.id = id;
-    this.from_me = from_me;
-    this.chat_id = chat_id;
-    this.client_id = client_id;
-    this.chat = new Chat({
-      id: chat_id,
-      is_group: chat_is_group,
-      name: chat_name,
-    });
   }
 
   private async read() {
@@ -52,7 +35,7 @@ class Message extends ModelWPP {
     const link = 'https://agendar.barbearia.theborges.nom.br';
     const baseDict = { salute, link_site: link };
 
-    if (!chat.is_group) {
+    if (!chat.is_group && !chat.is_send) {
       if (chat.name.length > 2 && !validatePhoneNumber(chat.name)) {
         message = await generateDbMsg(this.pool, 'WPP_INBOX_NAME', {
           ...baseDict,
@@ -65,13 +48,14 @@ class Message extends ModelWPP {
         message,
         number: chat.id,
       });
+      this.chat.setIsSend(true);
     }
   }
 
   public async salute() {
     if (!this.from_me) {
       const resultOldMessage = await this.poolWPP.query(
-        `SELECT created_at FROM messages WHERE is_new = false 
+        `SELECT created_at FROM messages WHERE is_new = false
         AND chat_id = $1 AND client_id = $2
         ORDER BY created_at DESC;`,
         [this.chat_id, this.client_id],
@@ -79,7 +63,7 @@ class Message extends ModelWPP {
 
       if (resultOldMessage.rowCount) {
         const oldMessage = resultOldMessage.rows[0] as { created_at: Date };
-        if (dayLib().diff(oldMessage.created_at, 'h') >= 36)
+        if (dayLib().diff(oldMessage.created_at, 'h') >= 24)
           await this.sendAndGenerateMSG();
       } else {
         await this.sendAndGenerateMSG();
