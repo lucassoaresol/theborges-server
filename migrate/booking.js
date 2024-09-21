@@ -146,6 +146,6 @@ async function processFile(filePath) {
 }
 
 // Chamar a função com o caminho do arquivo
-processFile('/root/repo/dev/theborges/server/migrate/booking.txt');
+processFile('booking.txt');
 
 
