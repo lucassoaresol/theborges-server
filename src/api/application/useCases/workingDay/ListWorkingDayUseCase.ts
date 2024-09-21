@@ -105,7 +105,7 @@ export class ListWorkingDayUseCase {
       ? await this.getBookings(workingDay, dayDateStartOf, totalMinutes)
       : [];
 
-    if (isToday) {
+    if (isToday && !isAuth) {
       workingTime = this.updateWorkingTime(workingTime, totalMinutes);
       isClosed = workingTime.end < totalMinutes;
     }

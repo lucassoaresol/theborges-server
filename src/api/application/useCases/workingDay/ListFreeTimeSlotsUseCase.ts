@@ -33,6 +33,7 @@ interface IWorkingTime {
 }
 
 export class ListFreeTimeSlotsUseCase {
+  private isIgnoreBreak = false;
   async execute({
     date,
     professionalId,
@@ -45,6 +46,7 @@ export class ListFreeTimeSlotsUseCase {
     const dateDayStart = dayLib(date).startOf('day');
 
     isIgnoreBreak = isAuthenticated && isIgnoreBreak;
+    this.isIgnoreBreak = isIgnoreBreak;
 
     const workingDay = await prismaClient.workingDay.findUnique({
       where: {
@@ -172,6 +174,8 @@ export class ListFreeTimeSlotsUseCase {
       )
       .sort((a, b) => a.start.diff(b.start)); // Ordena os slots ocupados por horário de início
 
+    let hasAddedAfterClosing = false;
+
     // Verificar intervalos livres entre ocupações e até o final do turno
     while (
       currentStart.add(requiredMinutes, 'minute').isBefore(shiftEnd) ||
@@ -209,6 +213,21 @@ export class ListFreeTimeSlotsUseCase {
           currentStart = nextSlot.end;
         }
       }
+    }
+
+    if (
+      !hasAddedAfterClosing &&
+      this.isIgnoreBreak && // Verificar se podemos ignorar o fechamento
+      currentStart.isBefore(shiftEnd) && // O serviço começa antes do fechamento
+      currentStart.add(requiredMinutes, 'minute').isAfter(shiftEnd) // E o serviço ultrapassa o fechamento
+    ) {
+      // Adicionar o horário que ultrapassa o fechamento
+      freeSlots.push({
+        display: currentStart.format('HH:mm'),
+        total: currentStart.hour() * 60 + currentStart.minute(),
+      });
+
+      hasAddedAfterClosing = true; // Controlar para não adicionar múltiplos horários depois do fechamento
     }
   }
 }
