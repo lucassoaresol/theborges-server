@@ -99,7 +99,7 @@ export class ListWorkingDayUseCase {
 
     const isToday = dayDate.isSame(now, 'day');
 
-    totalMinutes = isToday ? totalMinutes : 0;
+    totalMinutes = isToday && !isAuth ? totalMinutes : 0;
 
     bookings = isAuth
       ? await this.getBookings(workingDay, dayDateStartOf, totalMinutes)
