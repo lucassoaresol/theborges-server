@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiUsingNow = axios.create({
-  baseURL: `${process.env.URL_API_WPP}/theborges`,
+  baseURL: `${process.env.URL_API_WPP}/${process.env.ID_WPP}`,
   timeout: 100000,
 });
 
