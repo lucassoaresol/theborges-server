@@ -1,4 +1,4 @@
-import { CreateOperatingHourController } from '../../application/controllers/operatingHours/createOperatingHourController.js';
+import { CreateOperatingHourController } from '../../application/controllers/operatingHours/CreateOperatingHourController.js';
 
 import { makeCreateOperatingHourUseCase } from './makeCreateOperatingHourUseCase.js';
 

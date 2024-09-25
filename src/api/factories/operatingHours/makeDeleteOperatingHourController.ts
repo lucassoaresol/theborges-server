@@ -1,4 +1,4 @@
-import { DeleteOperatingHourController } from '../../application/controllers/operatingHours/deleteOperatingHourController.js';
+import { DeleteOperatingHourController } from '../../application/controllers/operatingHours/DeleteOperatingHourController.js';
 
 import { makeDeleteOperatingHourUseCase } from './makeDeleteOperatingHourUseCase.js';
 

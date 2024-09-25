@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import { makeListCategoryController } from '../factories/category/makeListCategoryController';
+import { makeGetCategoryController } from '../factories/category/makeGetCategoryController';
 import { routeAdapter } from '../server/adapters/routeAdapter';
 
 const router = Router();
 
-router.get('', routeAdapter(makeListCategoryController()));
+router.get('', routeAdapter(makeGetCategoryController()));
 
 export default router;

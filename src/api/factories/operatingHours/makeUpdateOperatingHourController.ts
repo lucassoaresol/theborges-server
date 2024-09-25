@@ -1,4 +1,4 @@
-import { UpdateOperatingHourController } from '../../application/controllers/operatingHours/updateOperatingHourController.js';
+import { UpdateOperatingHourController } from '../../application/controllers/operatingHours/UpdateOperatingHourController.js';
 
 import { makeUpdateOperatingHourUseCase } from './makeUpdateOperatingHourUseCase.js';
 

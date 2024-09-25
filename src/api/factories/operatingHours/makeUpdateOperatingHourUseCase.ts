@@ -1,4 +1,4 @@
-import { UpdateOperatingHourUseCase } from '../../application/useCases/operatingHours/updateOperatingHourUseCase.js';
+import { UpdateOperatingHourUseCase } from '../../application/useCases/operatingHours/UpdateOperatingHourUseCase';
 
 export function makeUpdateOperatingHourUseCase() {
   return new UpdateOperatingHourUseCase();

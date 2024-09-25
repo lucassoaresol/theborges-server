@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { IController, IRequest, IResponse } from '../../interfaces/IController';
-import { VerifyPhoneUseCase } from '../../useCases/auth/verifyPhoneUseCase';
+import { VerifyPhoneUseCase } from '../../useCases/auth/VerifyPhoneUseCase';
 
 const schema = z.object({
   phone: z.string().min(2),
