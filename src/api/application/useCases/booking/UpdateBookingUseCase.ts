@@ -8,7 +8,7 @@ import { AppError } from '../../errors/appError';
 interface IInput {
   id: number;
   forPersonName?: string;
-  status?: 'CANCELLED' | 'COMPLETED' | 'RESCHEDULED';
+  status?: 'CANCELLED' | 'COMPLETED' | 'RESCHEDULED' | 'NO_SHOW';
 }
 
 interface IOutput {

@@ -4,7 +4,9 @@ import { IController, IRequest, IResponse } from '../../interfaces/IController';
 import { UpdateBookingUseCase } from '../../useCases/booking/UpdateBookingUseCase';
 
 const schema = z.object({
-  status: z.enum(['CANCELLED', 'COMPLETED', 'RESCHEDULED']).optional(),
+  status: z
+    .enum(['CANCELLED', 'COMPLETED', 'RESCHEDULED', 'NO_SHOW'])
+    .optional(),
   forPersonName: z.string().optional(),
 });
 

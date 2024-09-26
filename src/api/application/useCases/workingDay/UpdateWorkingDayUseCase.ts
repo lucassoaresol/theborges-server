@@ -3,6 +3,7 @@ import { prismaClient } from '../../../../libs/prismaClient';
 import { AppError } from '../../errors/appError';
 
 interface IInput {
+  date: string;
   professionalId: number;
   start: number;
   end?: number;
@@ -17,8 +18,13 @@ interface IWorkingTime {
 }
 
 export class UpdateWorkingDayUseCase {
-  async execute({ end, professionalId, start }: IInput): Promise<IOutput> {
-    const today = dayLib().startOf('day');
+  async execute({
+    date,
+    professionalId,
+    start,
+    end,
+  }: IInput): Promise<IOutput> {
+    const today = dayLib(date).startOf('day');
 
     const workingDay = await prismaClient.workingDay.findUnique({
       where: {

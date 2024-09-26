@@ -215,6 +215,7 @@ enum BookingStatus {
   COMPLETED
   CANCELLED
   RESCHEDULED
+  NO_SHOW
 }
 
 model BookingCart {
