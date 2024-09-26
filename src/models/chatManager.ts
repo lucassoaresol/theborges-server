@@ -43,14 +43,14 @@ class ChatManager extends ModelWPP {
     id: string,
   ): Promise<IClientWithBooking | null> {
     const result = await this.pool.query(
-      `SELECT c.id, c."name",
-       c."publicId", b.id AS booking_id, b."date", b."startTime",
-       b."publicId" AS booking_public_id FROM clients c
-       LEFT JOIN (SELECT b1.* FROM bookings b1
-       WHERE b1.status = 'CONFIRMED'
-       ORDER BY b1."date" ASC, b1."startTime" ASC
-       LIMIT 1) b ON b."clientId" = c.id
-       WHERE c.email = $1;`,
+      `WITH next_booking AS (SELECT b1.*,
+      ROW_NUMBER() OVER (PARTITION BY b1."clientId"
+      ORDER BY b1."date" ASC, b1."startTime" ASC) AS rn
+      FROM bookings b1 WHERE b1.status = 'CONFIRMED')
+      SELECT c.id, c."name", c."publicId", b.id AS booking_id,
+      b."date", b."startTime", b."publicId" AS booking_public_id
+      FROM clients c LEFT JOIN next_booking b ON b."clientId" = c.id AND b.rn = 1
+      WHERE c.email = $1;`,
       [id],
     );
     if (result.rows.length > 0) {
