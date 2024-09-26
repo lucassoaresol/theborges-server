@@ -1,6 +1,11 @@
-export interface IChat {
+export interface IChatData {
   id: string;
   name: string;
   is_group: boolean;
-  is_send: boolean;
+}
+
+export interface IChat {
+  id: string;
+  name: string;
+  isGroup: boolean;
 }

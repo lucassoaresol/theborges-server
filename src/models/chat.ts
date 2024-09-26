@@ -1,3 +1,4 @@
+import { IBookingData } from '../interfaces/booking.js';
 import { IChat } from '../interfaces/chat.js';
 import { IClient } from '../interfaces/client.js';
 
@@ -5,26 +6,25 @@ class Chat {
   constructor(
     private id: string,
     private name: string,
-    private is_group: boolean,
-    private is_send = false,
-    private client: IClient | null,
+    private isGroup: boolean,
+    private client?: IClient,
+    private booking?: IBookingData,
   ) {}
 
   public getData(): IChat {
     return {
       id: this.id,
-      is_group: this.is_group,
       name: this.name,
-      is_send: this.is_send,
+      isGroup: this.isGroup,
     };
   }
 
-  public setIsSend(isSend: boolean): void {
-    this.is_send = isSend;
+  public getClient(): IClient | undefined {
+    return this.client;
   }
 
-  public getClient(): IClient | null {
-    return this.client;
+  public getBooking(): IBookingData | undefined {
+    return this.booking;
   }
 }
 

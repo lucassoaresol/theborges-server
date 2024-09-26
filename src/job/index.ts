@@ -1,12 +1,13 @@
+import 'dotenv/config';
 import Database from '../db/pg.js';
 import DatabaseWPP from '../db/wpp.js';
-import 'dotenv/config';
 import './app.js';
 
-async function startServer() {
+async function startJob() {
   try {
     Database.connect();
     console.log('Database connected successfully.');
+
     DatabaseWPP.connect();
     console.log('DatabaseWPP connected successfully.');
   } catch (error) {
@@ -15,4 +16,4 @@ async function startServer() {
   }
 }
 
-startServer();
+startJob();

@@ -1,9 +1,9 @@
-import { Dayjs } from 'dayjs';
-
 import { createMessage } from '../../../../libs/axiosWPP';
 import dayLib from '../../../../libs/dayjs';
 import { prismaClient } from '../../../../libs/prismaClient';
 import { PublicIdGenerator } from '../../../../services/PublicIdGenerator';
+import { capitalizeFirstName } from '../../../../utils/capitalizeFirstName';
+import { getFormattedDate } from '../../../../utils/getFormattedDate';
 import { AppError } from '../../errors/appError';
 
 interface IInput {
@@ -152,8 +152,8 @@ export class CreateBookingUseCase {
     });
 
     const startDateTime = dateDay.add(startTime, 'm');
-    const customerName = this.capitalizeFirstName(booking.client.name.trim());
-    const formattedDate = this.getFormattedDate(startDateTime);
+    const customerName = capitalizeFirstName(booking.client.name.trim());
+    const formattedDate = getFormattedDate(startDateTime);
 
     const message = await this.generateDbMsg(
       publicId,
@@ -168,28 +168,6 @@ export class CreateBookingUseCase {
     return {
       result: booking,
     };
-  }
-
-  private capitalizeFirstName(name: string): string {
-    return name
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .shift() as string;
-  }
-
-  private getFormattedDate(startDateTime: Dayjs): string {
-    const now = dayLib();
-
-    if (startDateTime.isSame(now, 'day')) {
-      return `hoje às ${startDateTime.format('HH:mm')}`;
-    } else if (startDateTime.isSame(now.add(1, 'day'), 'day')) {
-      return `amanhã às ${startDateTime.format('HH:mm')}`;
-    } else if (startDateTime.diff(now, 'day') <= 6) {
-      return `${startDateTime.format('dddd')} às ${startDateTime.format('HH:mm')}`;
-    } else {
-      return `${startDateTime.format('DD/MM/YYYY')} às ${startDateTime.format('HH:mm')}`;
-    }
   }
 
   private async generateDbMsg(
@@ -249,7 +227,7 @@ export class CreateBookingUseCase {
       resultTemplate = await prismaClient.messageTemplate.findUnique({
         where: { name: this.templateName.new_person },
       });
-      objFormat.nome_pessoa = this.capitalizeFirstName(forPersonName.trim());
+      objFormat.nome_pessoa = capitalizeFirstName(forPersonName.trim());
     }
 
     if (resultTemplate) {

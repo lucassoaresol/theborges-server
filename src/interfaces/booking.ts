@@ -1,15 +1,18 @@
 import { IClient } from './client';
 
-export interface IBooking {
+export interface IBookingData {
   id: number;
   date: Date;
+  startTime: number;
   clientId: number;
+  publicId: string;
+}
+
+export interface IBooking extends IBookingData {
   createdAt: Date;
   endTime: number;
   forPersonName: string | null;
   professionalId: number;
-  publicId: string;
-  startTime: number;
   status: string;
   updatedAt: Date;
   wasReminded: boolean;

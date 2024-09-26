@@ -10,3 +10,10 @@ export interface IClient {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IClientWithBooking extends IClient {
+  booking_id: number;
+  date: Date;
+  startTime: number;
+  booking_public_id: string;
+}

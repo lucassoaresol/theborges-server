@@ -5,7 +5,7 @@ import MessageManager from '../models/messageManager.js';
 
 let isRunningReadMessages = false;
 CronJob.from({
-  cronTime: '*/10 * * * * *',
+  cronTime: '*/5 * * * * *',
   onTick: async () => {
     if (isRunningReadMessages) {
       console.log('Job já está em execução, ignorando a nova execução.');

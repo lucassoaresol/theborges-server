@@ -15,8 +15,7 @@ class MessageManager extends ModelWPP {
     const chat = await this.chats.add({
       id: data.chat_id,
       name: data.chat_name,
-      is_group: data.chat_is_group,
-      is_send: false,
+      isGroup: data.chat_is_group,
     });
 
     let message = this.messages.get(data.id);
@@ -48,11 +47,15 @@ class MessageManager extends ModelWPP {
     try {
       const resultMessages = (
         await this.poolWPP.query<IMessageWithChat>(
-          `SELECT m.id, m.from_me, m.client_id, m.chat_id, c.name AS chat_name,
-          c.is_group AS chat_is_group FROM messages m
+          `SELECT DISTINCT ON (m.chat_id)
+          m.chat_id, m.id, m.from_me,
+          m.client_id, c.name AS chat_name,
+          c.is_group AS chat_is_group
+          FROM messages m
           JOIN chats c ON c.id = m.chat_id
-          WHERE m.is_new = true AND m.client_id = 'theborges'
-          ORDER BY created_at;`,
+          WHERE m.is_new = true
+          AND m.client_id = 'theborges'
+          ORDER BY m.chat_id, m.created_at;`,
         )
       ).rows;
 

@@ -3,6 +3,8 @@ import { createMessage } from '../libs/axiosWPP';
 import dayLib from '../libs/dayjs';
 import { prismaClient } from '../libs/prismaClient';
 
+import { capitalizeFirstName } from './capitalizeFirstName';
+
 export class VerifyBookingUseCase {
   async execute(booking: IBooking) {
     const startDateTime = dayLib(booking.date)
@@ -12,7 +14,7 @@ export class VerifyBookingUseCase {
     const minutes = startDateTime.diff(dayLib(), 'minutes');
 
     if (minutes <= 30) {
-      const customerName = this.capitalizeFirstName(booking.client.name.trim());
+      const customerName = capitalizeFirstName(booking.client.name.trim());
       const hour = startDateTime.format('HH:mm');
 
       let totalPrice = 0;
@@ -49,14 +51,6 @@ export class VerifyBookingUseCase {
       await createMessage({ ...data, message: '⬇️ PIX ⬇️' });
       await createMessage({ ...data, message: '32.665.968/0001-23' });
     }
-  }
-
-  private capitalizeFirstName(name: string): string {
-    return name
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .shift() as string;
   }
 
   private async generateDbMsg(
