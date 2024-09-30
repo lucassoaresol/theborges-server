@@ -54,8 +54,9 @@ class MessageManager extends ModelWPP {
           FROM messages m
           JOIN chats c ON c.id = m.chat_id
           WHERE m.is_new = true
-          AND m.client_id = 'theborges'
+          AND m.client_id = $1
           ORDER BY m.chat_id, m.created_at;`,
+          [process.env.CLIENT_ID],
         )
       ).rows;
 

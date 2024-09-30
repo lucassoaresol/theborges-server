@@ -1,4 +1,3 @@
-import { avisos, createMessage } from '../../../../libs/axiosWPP';
 import dayLib from '../../../../libs/dayjs';
 import { prismaClient } from '../../../../libs/prismaClient';
 import { capitalizeFirstName } from '../../../../utils/capitalizeFirstName';
@@ -24,7 +23,6 @@ interface IOutput {
     startTime: number;
     status: string;
     updatedAt: Date;
-    wasReminded: boolean;
     client: {
       id: number;
       name: string;
@@ -58,7 +56,10 @@ interface IOutput {
 }
 
 export class UpdateBookingUseCase {
-  constructor(private readonly templateName: string) {}
+  constructor(
+    private clientId: string,
+    private readonly templateName: string,
+  ) {}
 
   async execute({ id, forPersonName, status }: IInput): Promise<IOutput> {
     try {
@@ -81,20 +82,42 @@ export class UpdateBookingUseCase {
         const customerName = capitalizeFirstName(booking.client.name.trim());
         const formattedDate = getFormattedDate(startDateTime);
 
-        const message = await this.generateDbMsg(
-          booking.client.publicId,
-          customerName,
-          formattedDate,
-        );
+        const [message] = await Promise.all([
+          this.generateDbMsg(
+            booking.client.publicId,
+            customerName,
+            formattedDate,
+          ),
+          prismaClient.notificationQueue.updateMany({
+            where: {
+              bookingId: id,
+              OR: [{ status: 'FAILED' }, { status: 'PENDING' }],
+            },
+            data: { status: 'CANCELLED' },
+          }),
+        ]);
 
         await Promise.all([
-          createMessage({ message, number: booking.client.email }),
-          avisos({
-            message: `*Aviso de Horário Vago*
+          prismaClient.notificationQueue.create({
+            data: {
+              clientId: this.clientId,
+              chatId: booking.client.email,
+              message,
+              bookingId: booking.id,
+            },
+          }),
+          prismaClient.notificationQueue.create({
+            data: {
+              clientId: 'monitoramento',
+              // chatId: '120363307872837951@g.us',
+              chatId: '558898503947-1625277703@g.us',
+              message: `*Aviso de Horário Vago*
 
 Motivo: Cliente cancelou
 Cliente: ${customerName}
 Horário disponível: ${formattedDate}`,
+              bookingId: booking.id,
+            },
           }),
         ]);
       }
@@ -106,13 +129,28 @@ Horário disponível: ${formattedDate}`,
         const customerName = capitalizeFirstName(booking.client.name.trim());
         const formattedDate = getFormattedDate(startDateTime);
 
-        await avisos({
-          message: `*Aviso de Horário Vago*
+        await Promise.all([
+          prismaClient.notificationQueue.updateMany({
+            where: {
+              bookingId: id,
+              OR: [{ status: 'FAILED' }, { status: 'PENDING' }],
+            },
+            data: { status: 'CANCELLED' },
+          }),
+          prismaClient.notificationQueue.create({
+            data: {
+              clientId: 'monitoramento',
+              // chatId: '120363307872837951@g.us',
+              chatId: '558898503947-1625277703@g.us',
+              message: `*Aviso de Horário Vago*
 
 Motivo: Cliente reagendou
 Cliente: ${customerName}
 Horário disponível: ${formattedDate}`,
-        });
+              bookingId: booking.id,
+            },
+          }),
+        ]);
       }
 
       return { result: booking };

@@ -1,9 +1,13 @@
-import { createMessage } from '../../../../libs/axiosWPP';
+import { Dayjs } from 'dayjs';
+
+import Database from '../../../../db/pg';
+import { IDataDict } from '../../../../interfaces/dataDict';
 import dayLib from '../../../../libs/dayjs';
 import { prismaClient } from '../../../../libs/prismaClient';
 import { PublicIdGenerator } from '../../../../services/PublicIdGenerator';
 import { capitalizeFirstName } from '../../../../utils/capitalizeFirstName';
 import { getFormattedDate } from '../../../../utils/getFormattedDate';
+import { insertIntoTable } from '../../../../utils/insertIntoTable';
 import { AppError } from '../../errors/appError';
 
 interface IInput {
@@ -29,7 +33,6 @@ interface IOutput {
     startTime: number;
     status: string;
     updatedAt: Date;
-    wasReminded: boolean;
     client: {
       id: number;
       name: string;
@@ -71,6 +74,7 @@ interface IWorkingTime {
 export class CreateBookingUseCase {
   constructor(
     private publicIdGenerator: PublicIdGenerator,
+    private clientId: string,
     private readonly templateName: {
       new: string;
       new_person: string;
@@ -121,8 +125,8 @@ export class CreateBookingUseCase {
         date: dateDay.toDate(),
         OR: [
           {
-            startTime: { lt: endTime }, // Início do agendamento solicitado colide com outro (permitindo que o fim do outro seja igual ao startTime)
-            endTime: { gt: startTime }, // Fim do agendamento solicitado colide com outro (permitindo que o início do outro seja igual ao endTime)
+            startTime: { lt: endTime },
+            endTime: { gt: startTime },
           },
         ],
         status: 'CONFIRMED',
@@ -141,7 +145,6 @@ export class CreateBookingUseCase {
         clientId,
         forPersonName,
         professionalId,
-        wasReminded: true,
         publicId,
         services: { createMany: { data: services } },
       },
@@ -153,17 +156,64 @@ export class CreateBookingUseCase {
 
     const startDateTime = dateDay.add(startTime, 'm');
     const customerName = capitalizeFirstName(booking.client.name.trim());
-    const formattedDate = getFormattedDate(startDateTime);
 
-    const message = await this.generateDbMsg(
-      publicId,
-      customerName,
-      formattedDate,
-      forPersonName,
-      booking.services,
-    );
+    const [messageConfirmed, messageRemember] = await Promise.all([
+      this.generateMsgType(
+        publicId,
+        customerName,
+        startDateTime,
+        booking.services,
+        forPersonName,
+      ),
+      this.generateMsgType(
+        publicId,
+        customerName,
+        startDateTime,
+        booking.services,
+        undefined,
+        'REMEMBER_BOOKING',
+      ),
+    ]);
 
-    await createMessage({ message, number: booking.client.email });
+    const scheduledTimeRemember = startDateTime.add(-30, 'minute');
+
+    const pool = Database.getPool();
+
+    await Promise.all([
+      prismaClient.notificationQueue.create({
+        data: {
+          clientId: this.clientId,
+          chatId: booking.client.email,
+          message: messageConfirmed,
+          bookingId: booking.id,
+        },
+      }),
+      insertIntoTable(pool, 'notification_queue', {
+        client_id: this.clientId,
+        chat_id: booking.client.email,
+        message: messageRemember,
+        booking_id: booking.id,
+        scheduled_time: scheduledTimeRemember.format('YYYY-MM-DD HH:mm:ss.SSS'),
+      }),
+      insertIntoTable(pool, 'notification_queue', {
+        client_id: this.clientId,
+        chat_id: booking.client.email,
+        message: '⬇️ PIX ⬇️',
+        booking_id: booking.id,
+        scheduled_time: scheduledTimeRemember
+          .add(3, 'second')
+          .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      }),
+      insertIntoTable(pool, 'notification_queue', {
+        client_id: this.clientId,
+        chat_id: booking.client.email,
+        message: '32.665.968/0001-23',
+        booking_id: booking.id,
+        scheduled_time: scheduledTimeRemember
+          .add(6, 'second')
+          .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      }),
+    ]);
 
     return {
       result: booking,
@@ -171,16 +221,38 @@ export class CreateBookingUseCase {
   }
 
   private async generateDbMsg(
+    name: string,
+    objFormat?: IDataDict,
+  ): Promise<string> {
+    let template = '';
+    const resultTemplate = await prismaClient.messageTemplate.findUnique({
+      where: { name },
+    });
+    if (resultTemplate) {
+      if (objFormat) {
+        template = resultTemplate.body.replace(/{(\w+)}/g, (_, match) => {
+          return objFormat[match] || '';
+        });
+      } else {
+        template = resultTemplate.body;
+      }
+    }
+
+    return template.replace(/\\n/g, '\n');
+  }
+
+  private async generateMsgType(
     publicId: string,
     customerName: string,
-    formattedDate: string,
-    forPersonName: string | undefined,
+    startDateTime: Dayjs,
     services: {
       price: number;
       service: {
         name: string;
       };
     }[],
+    forPersonName?: string,
+    type = 'CONFIRMED',
   ): Promise<string> {
     let serviceList = '';
     let totalPrice = 0;
@@ -201,44 +273,48 @@ export class CreateBookingUseCase {
       currency: 'BRL',
     })}*`;
 
-    const objFormat: {
-      public_id: string;
-      nome_cliente: string;
-      data: string;
-      total_servico: string;
-      servicos: string;
-      nome_pessoa?: string;
-    } = {
-      public_id: publicId,
-      nome_cliente: customerName,
-      data: formattedDate,
-      total_servico:
-        services.length > 1 ? 'Serviços agendados' : 'Serviço agendado',
-      servicos: serviceList,
-    };
-
     let template = '';
 
-    let resultTemplate = await prismaClient.messageTemplate.findUnique({
-      where: { name: this.templateName.new },
-    });
+    if (type === 'CONFIRMED') {
+      const objFormat: {
+        public_id: string;
+        nome_cliente: string;
+        data: string;
+        total_servico: string;
+        servicos: string;
+        nome_pessoa?: string;
+      } = {
+        public_id: publicId,
+        nome_cliente: customerName,
+        data: getFormattedDate(startDateTime),
+        total_servico:
+          services.length > 1 ? 'Serviços agendados' : 'Serviço agendado',
+        servicos: serviceList,
+      };
 
-    if (forPersonName) {
-      resultTemplate = await prismaClient.messageTemplate.findUnique({
-        where: { name: this.templateName.new_person },
-      });
-      objFormat.nome_pessoa = capitalizeFirstName(forPersonName.trim());
+      template = await this.generateDbMsg(this.templateName.new, objFormat);
+
+      if (forPersonName) {
+        objFormat.nome_pessoa = capitalizeFirstName(forPersonName.trim());
+        template = await this.generateDbMsg(
+          this.templateName.new_person,
+          objFormat,
+        );
+      }
+    } else {
+      const objFormat = {
+        nome_cliente: customerName,
+        minutes: 30,
+        hour: startDateTime.format('HH:mm'),
+        value: totalPrice.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+      };
+
+      template = await this.generateDbMsg(type, objFormat);
     }
 
-    if (resultTemplate) {
-      template = resultTemplate.body.replace(
-        /{(\w+)}/g,
-        (_: any, match: keyof typeof objFormat) => {
-          return objFormat[match] || '';
-        },
-      );
-    }
-
-    return template.replace(/\\n/g, '\n');
+    return template;
   }
 }

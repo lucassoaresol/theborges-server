@@ -3,11 +3,8 @@ import dayLib from '../libs/dayjs.js';
 import { capitalizeFirstName } from '../utils/capitalizeFirstName.js';
 import { generateDbMsg } from '../utils/generateDbMsg.js';
 import { getFormattedDate } from '../utils/getFormattedDate.js';
-import {
-  saudacao,
-  updateIntoTable,
-  validatePhoneNumber,
-} from '../utils/helperFunctions.js';
+import { saudacao, validatePhoneNumber } from '../utils/helperFunctions.js';
+import { updateIntoTable } from '../utils/updateIntoTable.js';
 
 import Chat from './chat.js';
 import ModelWPP from './modelWPP.js';
@@ -66,7 +63,7 @@ class Message extends ModelWPP {
       } else {
         message = await generateDbMsg(this.pool, 'WPP_INBOX', baseDict);
       }
-      await createMessage({
+      await createMessage(String(process.env.CLIENT_ID), {
         message,
         number: chat.id,
       });

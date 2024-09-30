@@ -15,7 +15,6 @@ export interface IBooking extends IBookingData {
   professionalId: number;
   status: string;
   updatedAt: Date;
-  wasReminded: boolean;
   client: IClient;
   services: {
     price: number;

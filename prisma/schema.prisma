@@ -52,13 +52,20 @@ model Client {
   @@map("clients")
 }
 
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
 model Booking {
   id             Int           @id @default(autoincrement())
   date           DateTime
   startTime      Int
   endTime        Int
   status         BookingStatus @default(CONFIRMED)
-  wasReminded    Boolean       @default(false)
   forPersonName  String?
   publicId       String        @unique
   clientId       Int
@@ -210,14 +217,6 @@ model MessageTemplate {
   @@map("message_templates")
 }
 
-enum BookingStatus {
-  CONFIRMED
-  COMPLETED
-  CANCELLED
-  RESCHEDULED
-  NO_SHOW
-}
-
 model BookingCart {
   id             Int       @id @default(autoincrement())
   selectedDate   DateTime?
@@ -246,4 +245,30 @@ model BookingCartService {
   service Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@map("booking_cart_services")
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELLED
+
+  @@map("notification_status")
+}
+
+model NotificationQueue {
+  id            Int                @id @default(autoincrement())
+  clientId      String             @map("client_id")
+  chatId        String             @map("chat_id")
+  message       String
+  status        NotificationStatus @default(PENDING)
+  attemptCount  Int                @default(0) @map("attempt_count")
+  scheduledTime DateTime?          @map("scheduled_time")
+  sentAt        DateTime?          @map("sent_at")
+  error         Json?
+  bookingId     Int?               @map("booking_id")
+  createdAt     DateTime?          @map("created_at")
+  updatedAt     DateTime?          @map("updated_at")
+
+  @@map("notification_queue")
 }

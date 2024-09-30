@@ -1,4 +1,5 @@
 import { PublicIdGenerator } from '../../../services/PublicIdGenerator';
+import { env } from '../../application/config/env';
 import { CreateBookingUseCase } from '../../application/useCases/booking/CreateBookingUseCase';
 
 export function makeCreateBookingUseCase() {
@@ -8,5 +9,9 @@ export function makeCreateBookingUseCase() {
     new: 'NEW_BOOKING',
     new_person: 'NEW_BOOKING_PERSON',
   };
-  return new CreateBookingUseCase(publicIdGenerator, TEMPLATE_NAME);
+  return new CreateBookingUseCase(
+    publicIdGenerator,
+    env.clientId,
+    TEMPLATE_NAME,
+  );
 }

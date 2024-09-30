@@ -4,6 +4,7 @@ import { Dayjs } from 'dayjs';
 
 import dayLib from '../libs/dayjs.js';
 import { prismaClient } from '../libs/prismaClient.js';
+import { verifyBooking } from '../utils/verifyBooking.js';
 
 const upsertWorkingDay = async (
   date: Date,
@@ -106,6 +107,8 @@ const processWorkingDaysJob = async () => {
 
 CronJob.from({
   cronTime: '0 0 0 * * *',
-  onTick: processWorkingDaysJob,
+  onTick: async () => {
+    await Promise.all([processWorkingDaysJob(), verifyBooking()]);
+  },
   start: true,
 });
