@@ -109,8 +109,7 @@ export class UpdateBookingUseCase {
           prismaClient.notificationQueue.create({
             data: {
               clientId: 'monitoramento',
-              // chatId: '120363307872837951@g.us',
-              chatId: '558898503947-1625277703@g.us',
+              chatId: '120363307872837951@g.us',
               message: `*Aviso de Horário Vago*
 
 Motivo: Cliente cancelou
@@ -140,8 +139,7 @@ Horário disponível: ${formattedDate}`,
           prismaClient.notificationQueue.create({
             data: {
               clientId: 'monitoramento',
-              // chatId: '120363307872837951@g.us',
-              chatId: '558898503947-1625277703@g.us',
+              chatId: '120363307872837951@g.us',
               message: `*Aviso de Horário Vago*
 
 Motivo: Cliente reagendou
