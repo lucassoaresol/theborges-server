@@ -7,7 +7,9 @@ export async function verifyBooking() {
   });
 
   const promises = bookings.map(async (el) => {
-    const endTimeDay = dayLib().startOf('day').add(el.endTime);
+    const endTimeDay = dayLib(el.date)
+      .startOf('day')
+      .add(el.endTime, 'minutes');
     if (dayLib().diff(endTimeDay, 'h') >= 36) {
       await prismaClient.booking.update({
         where: { id: el.id },
