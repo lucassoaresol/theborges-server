@@ -1,3 +1,4 @@
+import { verifyNumber } from '../../../../libs/axiosWPP';
 import { prismaClient } from '../../../../libs/prismaClient';
 import { AppError } from '../../errors/appError';
 
@@ -32,8 +33,16 @@ interface IOutput {
 
 export class GetClientByPhoneUseCase {
   async execute({ phone }: IInput): Promise<IOutput> {
+    const resultPhone = await verifyNumber(phone);
+
+    if (!resultPhone) {
+      throw new AppError('');
+    }
+
+    const email = resultPhone._serialized;
+
     const client = await prismaClient.client.findUnique({
-      where: { phone },
+      where: { email },
       include: { bookingCart: true },
     });
 
