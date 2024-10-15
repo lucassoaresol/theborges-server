@@ -2,8 +2,8 @@ import cors from 'cors';
 import express from 'express';
 
 import 'express-async-errors';
-import { env } from '../application/config/env.js';
-import { errorHandler } from '../application/errors/handleError.js';
+import { env } from '../application/config/env';
+import { errorHandler } from '../application/errors/handleError';
 import routes from '../routes';
 
 const app = express();

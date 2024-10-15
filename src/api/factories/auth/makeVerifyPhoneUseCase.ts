@@ -1,4 +1,4 @@
-import { VerifyPhoneUseCase } from '../../application/useCases/auth/VerifyPhoneUseCase';
+import { VerifyPhoneUseCase } from '../../application/useCases/auth/verifyPhoneUseCase';
 
 export function makeVerifyPhoneUseCase() {
   return new VerifyPhoneUseCase();

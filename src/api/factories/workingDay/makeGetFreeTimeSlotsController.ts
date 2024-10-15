@@ -1,6 +1,6 @@
-import { GetFreeTimeSlotsController } from '../../application/controllers/workingDay/GetFreeTimeSlotsController.js';
+import { GetFreeTimeSlotsController } from '../../application/controllers/workingDay/GetFreeTimeSlotsController';
 
-import { makeGetFreeTimeSlotsUseCase } from './makeGetFreeTimeSlotsUseCase.js';
+import { makeGetFreeTimeSlotsUseCase } from './makeGetFreeTimeSlotsUseCase';
 
 export function makeGetFreeTimeSlotsController() {
   const getFreeTimeSlotsUseCase = makeGetFreeTimeSlotsUseCase();

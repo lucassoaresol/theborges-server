@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { IController, IRequest, IResponse } from '../../interfaces/IController';
-import { UpdateOperatingHourUseCase } from '../../useCases/operatingHours/UpdateOperatingHourUseCase';
+import { UpdateOperatingHourUseCase } from '../../useCases/operatingHours/updateOperatingHourUseCase';
 
 const schema = z.object({
   start: z.number().positive(),

@@ -1,6 +1,6 @@
-import { GetServiceController } from '../../application/controllers/service/GetServiceController.js';
+import { GetServiceController } from '../../application/controllers/service/GetServiceController';
 
-import { makeGetServiceUseCase } from './makeGetServiceUseCase.js';
+import { makeGetServiceUseCase } from './makeGetServiceUseCase';
 
 export function makeGetServiceController() {
   const getServiceUseCase = makeGetServiceUseCase();

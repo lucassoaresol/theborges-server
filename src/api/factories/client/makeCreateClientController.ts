@@ -1,6 +1,6 @@
-import { CreateClientController } from '../../application/controllers/client/CreateClientController.js';
+import { CreateClientController } from '../../application/controllers/client/CreateClientController';
 
-import { makeCreateClientUseCase } from './makeCreateClientUseCase.js';
+import { makeCreateClientUseCase } from './makeCreateClientUseCase';
 
 export function makeCreateClientController() {
   const createClientUseCase = makeCreateClientUseCase();

@@ -1,6 +1,6 @@
-import { UpdateWorkingDayController } from '../../application/controllers/workingDay/UpdateWorkingDayController.js';
+import { UpdateWorkingDayController } from '../../application/controllers/workingDay/UpdateWorkingDayController';
 
-import { makeUpdateWorkingDayUseCase } from './makeUpdateWorkingDayUseCase.js';
+import { makeUpdateWorkingDayUseCase } from './makeUpdateWorkingDayUseCase';
 
 export function makeUpdateWorkingDayController() {
   const updateWorkingDayUseCase = makeUpdateWorkingDayUseCase();

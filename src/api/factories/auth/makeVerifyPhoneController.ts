@@ -1,6 +1,6 @@
-import { VerifyPhoneController } from '../../application/controllers/auth/VerifyPhoneController.js';
+import { VerifyPhoneController } from '../../application/controllers/auth/VerifyPhoneController';
 
-import { makeVerifyPhoneUseCase } from './makeVerifyPhoneUseCase.js';
+import { makeVerifyPhoneUseCase } from './makeVerifyPhoneUseCase';
 
 export function makeVerifyPhoneController() {
   const verifyPhoneUseCase = makeVerifyPhoneUseCase();

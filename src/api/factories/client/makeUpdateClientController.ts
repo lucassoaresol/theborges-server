@@ -1,6 +1,6 @@
-import { UpdateClientController } from '../../application/controllers/client/UpdateClientController.js';
+import { UpdateClientController } from '../../application/controllers/client/UpdateClientController';
 
-import { makeUpdateClientUseCase } from './makeUpdateClientUseCase.js';
+import { makeUpdateClientUseCase } from './makeUpdateClientUseCase';
 
 export function makeUpdateClientController() {
   const updateClientUseCase = makeUpdateClientUseCase();

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IController } from '../../application/interfaces/IController.js';
+import { IController } from '../../application/interfaces/IController';
 
 export function routeAdapter(controller: IController) {
   return async (request: Request, response: Response) => {

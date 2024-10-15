@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { IController, IRequest, IResponse } from '../../interfaces/IController';
-import { CreateOperatingHourUseCase } from '../../useCases/operatingHours/CreateOperatingHourUseCase';
+import { CreateOperatingHourUseCase } from '../../useCases/operatingHours/createOperatingHourUseCase';
 
 const schema = z.object({
   dayOfWeek: z.number().positive(),

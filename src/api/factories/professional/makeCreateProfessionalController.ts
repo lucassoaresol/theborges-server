@@ -1,6 +1,6 @@
-import { CreateProfessionalController } from '../../application/controllers/professional/CreateProfessionalController.js';
+import { CreateProfessionalController } from '../../application/controllers/professional/CreateProfessionalController';
 
-import { makeCreateProfessionalUseCase } from './makeCreateProfessionalUseCase.js';
+import { makeCreateProfessionalUseCase } from './makeCreateProfessionalUseCase';
 
 export function makeCreateProfessionalController() {
   const createProfessionalUseCase = makeCreateProfessionalUseCase();

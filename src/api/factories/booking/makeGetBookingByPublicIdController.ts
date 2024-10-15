@@ -1,6 +1,6 @@
-import { GetBookingByPublicIdController } from '../../application/controllers/booking/GetBookingByPublicIdController.js';
+import { GetBookingByPublicIdController } from '../../application/controllers/booking/GetBookingByPublicIdController';
 
-import { makeGetBookingByPublicIdUseCase } from './makeGetBookingByPublicIdUseCase.js';
+import { makeGetBookingByPublicIdUseCase } from './makeGetBookingByPublicIdUseCase';
 
 export function makeGetBookingByPublicIdController() {
   const getBookingByPublicIdUseCase = makeGetBookingByPublicIdUseCase();

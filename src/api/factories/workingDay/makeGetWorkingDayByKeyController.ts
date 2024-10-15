@@ -1,6 +1,6 @@
-import { GetWorkingDayByKeyController } from '../../application/controllers/workingDay/GetWorkingDayByKeyController.js';
+import { GetWorkingDayByKeyController } from '../../application/controllers/workingDay/GetWorkingDayByKeyController';
 
-import { makeGetWorkingDayByKeyUseCase } from './makeGetWorkingDayByKeyUseCase.js';
+import { makeGetWorkingDayByKeyUseCase } from './makeGetWorkingDayByKeyUseCase';
 
 export function makeGetWorkingDayByKeyController() {
   const getWorkingDayByKeyUseCase = makeGetWorkingDayByKeyUseCase();

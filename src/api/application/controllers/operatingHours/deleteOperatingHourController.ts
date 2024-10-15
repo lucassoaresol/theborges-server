@@ -1,5 +1,5 @@
 import { IController, IRequest, IResponse } from '../../interfaces/IController';
-import { DeleteOperatingHourUseCase } from '../../useCases/operatingHours/DeleteOperatingHourUseCase';
+import { DeleteOperatingHourUseCase } from '../../useCases/operatingHours/deleteOperatingHourUseCase';
 
 export class DeleteOperatingHourController implements IController {
   constructor(

@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 
-import { env } from '../config/env.js';
-import { AppError } from '../errors/appError.js';
+import { env } from '../config/env';
+import { AppError } from '../errors/appError';
 import {
   IData,
   IMiddleware,
   IRequest,
   IResponse,
-} from '../interfaces/IMiddleware.js';
+} from '../interfaces/IMiddleware';
 
 export class AuthenticationMiddleware implements IMiddleware {
   async handle({ headers }: IRequest): Promise<IResponse | IData> {

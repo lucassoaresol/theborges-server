@@ -1,6 +1,6 @@
-import { GetOperatingHourController } from '../../application/controllers/operatingHours/GetOperatingHourController.js';
+import { GetOperatingHourController } from '../../application/controllers/operatingHours/GetOperatingHourController';
 
-import { makeGetOperatingHourUseCase } from './makeGetOperatingHourUseCase.js';
+import { makeGetOperatingHourUseCase } from './makeGetOperatingHourUseCase';
 
 export function makeGetOperatingHourController() {
   const getOperatingHourUseCase = makeGetOperatingHourUseCase();

@@ -1,6 +1,6 @@
-import { RefreshTokenController } from '../../application/controllers/auth/RefreshTokenController.js';
+import { RefreshTokenController } from '../../application/controllers/auth/RefreshTokenController';
 
-import { makeRefreshTokenUseCase } from './makeRefreshTokenUseCase.js';
+import { makeRefreshTokenUseCase } from './makeRefreshTokenUseCase';
 
 export function makeRefreshTokenController() {
   const refreshTokenUseCase = makeRefreshTokenUseCase();

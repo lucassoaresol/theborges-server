@@ -1,6 +1,6 @@
-import { GetClientByPhoneController } from '../../application/controllers/client/GetClientByPhoneController.js';
+import { GetClientByPhoneController } from '../../application/controllers/client/GetClientByPhoneController';
 
-import { makeGetClientByPhoneUseCase } from './makeGetClientByPhoneUseCase.js';
+import { makeGetClientByPhoneUseCase } from './makeGetClientByPhoneUseCase';
 
 export function makeGetClientByPhoneController() {
   const getClientByPhoneUseCase = makeGetClientByPhoneUseCase();

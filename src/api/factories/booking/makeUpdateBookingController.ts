@@ -1,6 +1,6 @@
 import { UpdateBookingController } from '../../application/controllers/booking/UpdateBookingController';
 
-import { makeUpdateBookingUseCase } from './makeUpdateBookingUseCase.js';
+import { makeUpdateBookingUseCase } from './makeUpdateBookingUseCase';
 
 export function makeUpdateBookingController() {
   const updateBookingUseCase = makeUpdateBookingUseCase();

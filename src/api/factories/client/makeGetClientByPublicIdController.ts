@@ -1,6 +1,6 @@
-import { GetClientByPublicIdController } from '../../application/controllers/client/GetClientByPublicIdController.js';
+import { GetClientByPublicIdController } from '../../application/controllers/client/GetClientByPublicIdController';
 
-import { makeGetClientByPublicIdUseCase } from './makeGetClientByPublicIdUseCase.js';
+import { makeGetClientByPublicIdUseCase } from './makeGetClientByPublicIdUseCase';
 
 export function makeGetClientByPublicIdController() {
   const getClientByPublicIdUseCase = makeGetClientByPublicIdUseCase();
