@@ -5,11 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsup src",
     "dev:api": "tsx watch src/api/index.ts",
     "dev:job": "tsx watch src/job/index.ts",
     "lint": "eslint src --ext .ts --fix",
-    "start:api": "tsup src && node dist/api/index.cjs",
-    "start:job": "tsup src && node dist/job/index.cjs"
+    "start:api": "node dist/api/index.cjs",
+    "start:job": "node dist/job/index.cjs"
   },
   "keywords": [],
   "author": "",
