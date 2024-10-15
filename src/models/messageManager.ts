@@ -1,8 +1,8 @@
-import { IMessageWithChat } from '../interfaces/message.js';
+import { IMessageWithChat } from '../interfaces/message';
 
-import ChatManager from './chatManager.js';
-import Message from './message.js';
-import ModelWPP from './modelWPP.js';
+import ChatManager from './chatManager';
+import Message from './message';
+import ModelWPP from './modelWPP';
 
 class MessageManager extends ModelWPP {
   private messages: Map<string, Message> = new Map();

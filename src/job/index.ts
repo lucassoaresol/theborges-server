@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import Database from '../db/pg.js';
-import DatabaseWPP from '../db/wpp.js';
-import './app.js';
+import Database from '../db/pg';
+import DatabaseWPP from '../db/wpp';
+import './app';
 
 async function startJob() {
   try {

@@ -1,8 +1,8 @@
-import { IChat } from '../interfaces/chat.js';
-import { IClientWithBooking } from '../interfaces/client.js';
+import { IChat } from '../interfaces/chat';
+import { IClientWithBooking } from '../interfaces/client';
 
-import Chat from './chat.js';
-import ModelWPP from './modelWPP.js';
+import Chat from './chat';
+import ModelWPP from './modelWPP';
 
 class ChatManager extends ModelWPP {
   private chats: Map<string, Chat> = new Map();

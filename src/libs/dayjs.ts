@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
-import isBetween from 'dayjs/plugin/isBetween.js';
-import localizedFormat from 'dayjs/plugin/localizedFormat.js';
+import isBetween from 'dayjs/plugin/isBetween';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import minMax from 'dayjs/plugin/minMax';
-import relativeTime from 'dayjs/plugin/relativeTime.js';
-import weekday from 'dayjs/plugin/weekday.js';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import weekday from 'dayjs/plugin/weekday';
 
 const dayLib = dayjs;
 

@@ -1,6 +1,6 @@
-import DatabaseWPP from '../db/wpp.js';
+import DatabaseWPP from '../db/wpp';
 
-import Model from './model.js';
+import Model from './model';
 
 class ModelWPP extends Model {
   protected poolWPP = DatabaseWPP.getPool();

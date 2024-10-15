@@ -22,26 +22,24 @@ export async function verifyNotificationQueue(pool: Pool<Client>) {
   const today = dayLib();
 
   const promises = notificationQueue.map(async (el) => {
-    try {
-      const seconds = dayLib(el.scheduled_time).diff(today, 'seconds');
-      if (seconds <= 0) {
-        await Promise.all([
-          createMessage(el.client_id, {
-            message: el.message,
-            number: el.chat_id,
-          }),
-          updateIntoTable(pool, 'notification_queue', {
-            id: el.id,
-            status: 'SENT',
-            sent_at: today.format('YYYY-MM-DD HH:mm:ss.SSS'),
-          }),
-        ]);
+    const seconds = dayLib(el.scheduled_time).diff(today, 'seconds');
+    if (seconds <= 0) {
+      try {
+        createMessage(el.client_id, {
+          message: el.message,
+          number: el.chat_id,
+        });
+        updateIntoTable(pool, 'notification_queue', {
+          id: el.id,
+          status: 'SENT',
+          sent_at: today.format('YYYY-MM-DD HH:mm:ss.SSS'),
+        });
+      } catch (error: any) {
+        await prismaClient.notificationQueue.update({
+          where: { id: el.id },
+          data: { status: 'FAILED', error },
+        });
       }
-    } catch (error: any) {
-      await prismaClient.notificationQueue.update({
-        where: { id: el.id },
-        data: { status: 'FAILED', error },
-      });
     }
   });
 

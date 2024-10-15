@@ -1,13 +1,13 @@
-import { createMessage } from '../libs/axiosWPP.js';
-import dayLib from '../libs/dayjs.js';
-import { capitalizeFirstName } from '../utils/capitalizeFirstName.js';
-import { generateDbMsg } from '../utils/generateDbMsg.js';
-import { getFormattedDate } from '../utils/getFormattedDate.js';
-import { saudacao, validatePhoneNumber } from '../utils/helperFunctions.js';
-import { updateIntoTable } from '../utils/updateIntoTable.js';
+import { createMessage } from '../libs/axiosWPP';
+import dayLib from '../libs/dayjs';
+import { capitalizeFirstName } from '../utils/capitalizeFirstName';
+import { generateDbMsg } from '../utils/generateDbMsg';
+import { getFormattedDate } from '../utils/getFormattedDate';
+import { saudacao, validatePhoneNumber } from '../utils/helperFunctions';
+import { updateIntoTable } from '../utils/updateIntoTable';
 
-import Chat from './chat.js';
-import ModelWPP from './modelWPP.js';
+import Chat from './chat';
+import ModelWPP from './modelWPP';
 
 class Message extends ModelWPP {
   constructor(

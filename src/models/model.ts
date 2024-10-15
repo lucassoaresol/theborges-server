@@ -1,4 +1,4 @@
-import Database from '../db/pg.js';
+import Database from '../db/pg';
 
 class Model {
   protected pool = Database.getPool();

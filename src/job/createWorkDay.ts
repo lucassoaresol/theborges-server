@@ -2,9 +2,9 @@ import { Prisma } from '@prisma/client';
 import { CronJob } from 'cron';
 import { Dayjs } from 'dayjs';
 
-import dayLib from '../libs/dayjs.js';
-import { prismaClient } from '../libs/prismaClient.js';
-import { verifyBooking } from '../utils/verifyBooking.js';
+import dayLib from '../libs/dayjs';
+import { prismaClient } from '../libs/prismaClient';
+import { verifyBooking } from '../utils/verifyBooking';
 
 const upsertWorkingDay = async (
   date: Date,

@@ -1,6 +1,6 @@
-import { IBookingData } from '../interfaces/booking.js';
-import { IChat } from '../interfaces/chat.js';
-import { IClient } from '../interfaces/client.js';
+import { IBookingData } from '../interfaces/booking';
+import { IChat } from '../interfaces/chat';
+import { IClient } from '../interfaces/client';
 
 class Chat {
   constructor(
