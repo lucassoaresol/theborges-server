@@ -25,11 +25,11 @@ export async function verifyNotificationQueueFailed(pool: Pool<Client>) {
     const seconds = dayLib(el.scheduled_time).diff(today, 'seconds');
     if (seconds <= 0) {
       try {
-        createMessage(el.client_id, {
+        await createMessage(el.client_id, {
           message: el.message,
           number: el.chat_id,
         });
-        updateIntoTable(pool, 'notification_queue', {
+        await updateIntoTable(pool, 'notification_queue', {
           id: el.id,
           status: 'SENT',
           sent_at: today.format('YYYY-MM-DD HH:mm:ss.SSS'),
